@@ -77,13 +77,13 @@ body.book::before{content:"";position:fixed;inset:0;z-index:-1;background:linear
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes growX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 
-/* Desktop: a full-screen photobook that opens when the page loads */
-@media (min-width:1000px) and (min-height:560px){
+/* Landscape screens (desktop, tablets, phones turned sideways): a full-screen two-page photobook */
+@media (min-width:640px) and (min-height:340px) and (min-aspect-ratio:5/4){
   .landing.wrap{max-width:none;padding:0}
   .landing .sheet{width:min(1240px,calc(100% - 2*clamp(16px,4vw,48px)))}
   .stage{--m:2.2vmin;--cue:50px;--h:calc(100vh - var(--m)*2 - var(--cue));--h:calc(100dvh - var(--m)*2 - var(--cue));
     position:relative;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:var(--h) var(--cue);gap:0;justify-items:center;align-items:center;
-    max-width:none;margin:0;padding:var(--m) var(--m) 0;height:100vh;height:100dvh;min-height:560px;
+    max-width:none;margin:0;padding:var(--m) var(--m) 0;height:100vh;height:100dvh;min-height:340px;
     perspective:3200px;perspective-origin:50% 38%;overflow-x:clip}
   .slider{display:block;width:100%;height:100%;transform-style:preserve-3d}
   .book{display:block;position:relative;height:100%;width:min(100%,calc(var(--h)*2.5));margin:0 auto;transform-style:preserve-3d}
@@ -130,30 +130,101 @@ body.book::before{content:"";position:fixed;inset:0;z-index:-1;background:linear
     .stage.solo .cue{animation-delay:1.6s}
     .cue .i{animation:nudge 1.8s 4.6s ease-in-out infinite}
   }
+  /* click target over the closed cover (shared rules live in the click-to-open section below) */
+  .hit{left:50%;top:var(--m);width:calc(min(100% - var(--m)*2,var(--h)*2.5)/2);height:var(--h);transform:translateX(-50%)}
 
-  /* ---- click to open (book.js adds .manual): everything follows --p, 0 = closed … 1 = open ---- */
-  .hit{position:absolute;z-index:6;left:50%;top:var(--m);width:calc(min(100% - var(--m)*2,var(--h)*2.5)/2);height:var(--h);transform:translateX(-50%);
-    padding:0;border:0;border-radius:4px;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
-  .hit:focus-visible{outline:3px solid var(--accent);outline-offset:-10px}
-  .stage.open .hit{display:none}
-  .stage.manual .book{animation:none;transform:translateX(calc(-25% * (1 - var(--p))))}
-  .stage.manual .flip{animation:none;transform:translateZ(.5px) rotateY(calc(var(--p) * -180deg))}
-  .stage.manual .shadow{animation:none;left:calc(50% * (1 - var(--p)))}
-  .stage.manual .face.front .shade{animation:none;opacity:calc(clamp(0,(var(--p) - .05)/.45,1) * .75)}
-  .stage.manual .face.back .shade{animation:none;opacity:calc(clamp(0,(1 - var(--p))/.5,1) * .8)}
-  /* a glint of light crosses the closed cover now and then, like foil catching a lamp */
-  .stage.manual:not(.open) .face.front::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
-    background:linear-gradient(112deg,transparent 38%,color-mix(in srgb,var(--paper) 75%,transparent) 50%,transparent 62%) no-repeat;background-size:260% 100%;opacity:.8;
-    animation:sheen 6.5s 2.6s ease-in-out infinite}
-  .stage.manual .collage .plate,.stage.manual .collage .note,.stage.manual .folio,.stage.manual .cue{animation:none;opacity:0}
-  @media (prefers-reduced-motion:no-preference){
-    .stage.manual.open .collage .note{animation:rise .9s cubic-bezier(.2,.7,.2,1) 1.3s both}
-    .stage.manual.open .collage .plate{animation:rise .95s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(1.2s + var(--i,0)*.17s)}
-    .stage.manual.open .folio{animation:fadeIn .8s 1.9s both}
-    .stage.manual.open .cue{animation:cueIn .9s 3s ease-out both}
-  }
 }
+
+/* ---------- click-to-open mode (book.js adds .manual) ----------
+   Everything follows two numbers set by book.js: --p (0 closed … 1 open) and --v (page view, phones: 0 left page … 1 right page). */
+.stage{--ka:1;--kb:0;--kc:-1}
+.hit{position:absolute;z-index:6;padding:0;border:0;border-radius:4px;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.hit:focus-visible{outline:3px solid var(--accent);outline-offset:-10px}
+.stage.open .hit{display:none}
+.stage.manual .book{animation:none;transform:translateX(calc(25% * (var(--ka)*var(--p) + var(--kb)*var(--v) + var(--kc))))}
+.stage.manual .flip{animation:none;transform:translateZ(.5px) rotateY(calc(var(--p) * -180deg))}
+.stage.manual .shadow{animation:none;left:calc(50% * (1 - var(--p)))}
+.stage.manual .face.front .shade{animation:none;opacity:calc(clamp(0,(var(--p) - .05)/.45,1) * .75)}
+.stage.manual .face.back .shade{animation:none;opacity:calc(clamp(0,(1 - var(--p))/.5,1) * .8)}
+/* a glint of light crosses the closed cover now and then, like foil catching a lamp */
+.stage.manual:not(.open) .face.front::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(112deg,transparent 38%,color-mix(in srgb,var(--paper) 75%,transparent) 50%,transparent 62%) no-repeat;background-size:260% 100%;opacity:.8;
+  animation:sheen 6.5s 2.6s ease-in-out infinite}
+.stage.manual .collage .plate,.stage.manual .collage .note,.stage.manual .folio,.stage.manual .cue{animation:none;opacity:0}
+@media (prefers-reduced-motion:no-preference){
+  .stage.manual.open .collage .note{animation:rise .9s cubic-bezier(.2,.7,.2,1) 1.3s both}
+  .stage.manual.open .collage .plate{animation:rise .95s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(1.2s + var(--i,0)*.17s)}
+  .stage.manual.open .folio{animation:fadeIn .8s 1.9s both}
+  .stage.manual.open .cue{animation:cueIn .9s 3s ease-out both}
+}
+
+/* ---------- portrait phones & tablets: the book is turned one page at a time (book.js adds .pager) ----------
+   The book is two pages wide; the screen shows one of them. Closed: the cover. Open: the left page, then the right page. */
+.stage.pager{--m:3vmin;--cue:46px;--ka:2;--kb:-2;--kc:-1;
+  --avail:calc(100vh - var(--m) - var(--cue));--avail:calc(100dvh - var(--m) - var(--cue));
+  --w:min(calc(100vw - var(--m)*2),calc(var(--avail)/1.3));
+  --h:min(var(--avail),calc(var(--w)*1.72));
+  position:relative;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:var(--h) var(--cue);gap:0;justify-items:center;align-items:center;
+  max-width:none;margin:0 calc(-1*clamp(16px,4vw,48px));padding:var(--m) 0 0;height:100vh;height:100dvh;min-height:480px;
+  perspective:1800px;perspective-origin:50% 38%;overflow-x:clip;touch-action:pan-y}
+.stage.pager .slider{display:block;width:100%;height:var(--h);transform-style:preserve-3d}
+.stage.pager .book{display:block;position:relative;left:50%;height:100%;width:calc(var(--w)*2);margin:0 0 0 calc(var(--w)*-1);transform-style:preserve-3d} /* wider than the screen, so centre it by hand */
+.stage.pager .shadow{display:block;position:absolute;left:0;right:0;top:4%;bottom:-2.4%;border-radius:8px;background:color-mix(in srgb,var(--ink) 62%,transparent);filter:blur(2.2vmin)}
+.stage.pager .cover,.stage.pager .face.back,.stage.pager .leaf{animation:none}
+.stage.pager .leaf{position:absolute;left:50%;top:0;width:50%;height:100%;aspect-ratio:auto;border-radius:0 3px 3px 0;box-shadow:none;
+  background:linear-gradient(to right,color-mix(in srgb,var(--ink) 18%,var(--paper)) 0,var(--paper) 8%,var(--paper) 93%,var(--paper-shade))}
+.stage.pager .leaf::after{content:"";position:absolute;right:-4px;top:3px;bottom:-3px;width:4px;border-radius:0 2px 2px 0;background:repeating-linear-gradient(to right,var(--paper-shade) 0 1px,var(--paper) 1px 2px)}
+.stage.pager .flip{display:block;position:absolute;left:50%;top:0;width:50%;height:100%;transform-origin:0 50%;transform-style:preserve-3d;z-index:3}
+.stage.pager .face{position:absolute;inset:-.9% -.9% -.9% 0;aspect-ratio:auto;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:2px 4px 4px 2px;
+  box-shadow:1px 1px 0 var(--paper-shade),2px 2px 0 color-mix(in srgb,var(--paper-shade) 80%,var(--ink))}
+.stage.pager .face.back{transform:rotateY(180deg);border-radius:4px 2px 2px 4px;
+  box-shadow:-1px 1px 0 var(--paper-shade),-2px 2px 0 color-mix(in srgb,var(--paper-shade) 80%,var(--ink));
+  background:linear-gradient(to right,var(--paper) 90%,color-mix(in srgb,var(--ink) 18%,var(--paper)))}
+.stage.pager .shade{display:block;position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;background:linear-gradient(to left,color-mix(in srgb,var(--ink) 55%,transparent),transparent 75%)}
+.stage.pager .face.back .shade{background:linear-gradient(to right,color-mix(in srgb,var(--ink) 55%,transparent),transparent 70%)}
+.stage.pager .leaf>.plate.big{inset:7% 6% 9% 9%}
+/* bigger type: the page fills the screen */
+.stage.pager .note h2{font-size:clamp(15px,5.4cqw,26px)}
+.stage.pager .note p{font-size:clamp(11.5px,3.5cqw,16px);line-height:1.45;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:9;overflow:hidden}
+.stage.pager .note .more-link{font-size:clamp(11px,3.3cqw,15px)}
+.stage.pager .folio{font-size:clamp(8px,2.4cqw,12px)}
+.stage.pager .cover-kicker{top:5.2%;right:8%;line-height:1.5;font-size:clamp(7.5px,2.3cqw,13px)}
+.stage.pager .cover-title{top:12.5%}
+.stage.pager .cover-art{top:31%}
+.stage.pager .hit{left:50%;top:var(--m);width:var(--w);height:var(--h);transform:translateX(-50%)}
+.stage.pager .cue{display:grid;place-items:center;position:absolute;left:50%;bottom:calc(var(--cue)/2 - 18px);transform:translateX(-50%);width:36px;height:36px;margin:0;border-radius:50%;
+  color:var(--paper);background:color-mix(in srgb,var(--paper) 14%,transparent);border:1px solid color-mix(in srgb,var(--paper) 38%,transparent)}
+.stage.pager .cue .i{width:1.1rem;height:1.1rem}
+/* the folded page corner (no words): tap it, or swipe, to turn the page. The corner of the page is cut away to the desk,
+   and the fold lies over the page with a soft shadow, like a dog-eared book. */
+.turn{position:absolute;z-index:7;top:calc(var(--m) + var(--h) - 76px);width:76px;height:76px;padding:0;border:0;background:none;opacity:0;pointer-events:none;transition:opacity .5s;
+  -webkit-tap-highlight-color:transparent;filter:drop-shadow(-3px -3px 4px color-mix(in srgb,var(--ink) 55%,transparent))}
+.turn::before,.turn::after{content:"";position:absolute;inset:0}
+.turn.next{left:calc(50% + var(--w)/2 - 76px);transform-origin:100% 100%}
+.turn.next::after{background:var(--desk);clip-path:polygon(100% 0,100% 100%,0 100%)}
+.turn.next::before{background:linear-gradient(135deg,color-mix(in srgb,var(--ink) 12%,var(--paper-shade)) 0,var(--paper) 55%,color-mix(in srgb,var(--ink) 24%,var(--paper-shade)) 100%);clip-path:polygon(0 0,100% 0,0 100%);z-index:1}
+.turn.prev{left:calc(50% - var(--w)/2);transform-origin:0 100%;filter:drop-shadow(3px -3px 4px color-mix(in srgb,var(--ink) 55%,transparent))}
+.turn.prev::after{background:var(--desk);clip-path:polygon(0 0,0 100%,100% 100%)}
+.turn.prev::before{background:linear-gradient(225deg,color-mix(in srgb,var(--ink) 12%,var(--paper-shade)) 0,var(--paper) 55%,color-mix(in srgb,var(--ink) 24%,var(--paper-shade)) 100%);clip-path:polygon(0 0,100% 0,100% 100%);z-index:1}
+.turn:focus-visible{outline:3px solid var(--accent);outline-offset:-6px}
+.stage.pager.opened.view-left .turn.next,.stage.pager.opened.view-right .turn.prev{opacity:1;pointer-events:auto}
+@media (prefers-reduced-motion:no-preference){
+  .stage.pager .slider{animation:bookIn 1.1s .15s cubic-bezier(.2,.7,.2,1) both}
+  .stage.pager .cover-kicker,.stage.pager .cover-title{animation:rise 1s .5s cubic-bezier(.2,.7,.2,1) both}
+  .stage.pager .cover-title{animation-delay:.62s}
+  .stage.pager .cover-art .block{animation:growX .9s .8s cubic-bezier(.2,.7,.2,1) both}
+  .stage.pager .cover-art .plate,.stage.pager .cover-foot{animation:fadeIn 1.1s 1s ease-out both}
+  .stage.pager.manual .collage .plate,.stage.pager.manual .collage .note,.stage.pager.manual .folio,.stage.pager.manual .cue{animation:none;opacity:0}
+  .stage.pager.manual.open .collage .note{animation:rise .9s cubic-bezier(.2,.7,.2,1) 1.3s both}
+  .stage.pager.manual.open .collage .plate{animation:rise .95s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(1.2s + var(--i,0)*.17s)}
+  .stage.pager.manual.open .folio{animation:fadeIn .8s 1.9s both}
+  .stage.pager.manual.open .cue{animation:cueIn .9s 3.2s ease-out both}
+  .stage.pager.opened.view-left .turn.next,.stage.pager.opened.view-right .turn.prev{animation:flap 3s 1.4s ease-in-out infinite}
+}
+
 @property --p{syntax:'<number>';inherits:true;initial-value:0}
+@property --v{syntax:'<number>';inherits:true;initial-value:0}
+@keyframes flap{0%,68%,100%{transform:scale(1)}84%{transform:scale(1.24)}}
 @keyframes sheen{0%{background-position:125% 0}24%,100%{background-position:-70% 0}}
 @keyframes bookIn{from{opacity:0;transform:translateY(7vh) scale(.92) rotateX(12deg)}to{opacity:1;transform:none}}
 @keyframes slide{from{transform:translateX(-25%)}to{transform:translateX(0)}}
