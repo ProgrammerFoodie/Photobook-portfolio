@@ -1,0 +1,31 @@
+# systemd unit for the live site (ugis.id.lv). Installed as /etc/systemd/system/photos.service
+[Unit]
+Description=Photos (Photolib) portfolio, ugis.id.lv
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+UMask=0002
+WorkingDirectory=/mnt/Extra20/photos
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=HOST=127.0.0.1
+Environment=DATA_DIR=/mnt/Extra20/photos/data
+Environment=PUBLIC_URL=https://ugis.id.lv
+Environment=TRUST_PROXY=loopback
+ExecStart=/usr/bin/node --disable-warning=ExperimentalWarning server.js
+Restart=on-failure
+RestartSec=3
+MemoryMax=600M
+
+# hardening: the service may only write inside its data folder
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/mnt/Extra20/photos/data
+
+[Install]
+WantedBy=multi-user.target

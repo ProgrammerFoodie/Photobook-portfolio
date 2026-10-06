@@ -1,0 +1,9 @@
+{
+  "items": {
+    "c-1-big": { "url_expiry": "2030-01-01T00:00:00Z", "url_location": "cvws.icloud-content.com", "url_path": "/S/abc/one.JPG?x=1" },
+    "c-2": { "url_expiry": "2030-01-01T00:00:00Z", "url_location": "cvws.icloud-content.com", "url_path": "/S/abc/two.JPG?x=1" },
+    "c-evil": { "url_location": "evil.example.com", "url_path": "/steal" },
+    "c-sneaky": { "url_location": "icloud.com.evil.example", "url_path": "/x" }
+  },
+  "locations": { "cvws.icloud-content.com": { "scheme": "https", "hosts": ["cvws.icloud-content.com"] } }
+}

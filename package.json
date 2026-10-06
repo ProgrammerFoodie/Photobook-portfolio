@@ -1,0 +1,23 @@
+{
+  "name": "photolib",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Lightweight photo portfolio with admin panel",
+  "engines": {
+    "node": ">=22.5"
+  },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server.js",
+    "dev": "node --disable-warning=ExperimentalWarning --watch server.js",
+    "test": "node --disable-warning=ExperimentalWarning --test \"test/*.test.js\"",
+    "set-password": "node --disable-warning=ExperimentalWarning scripts/set-password.js"
+  },
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "exifr": "^7.1.3",
+    "express": "^5.2.1",
+    "multer": "^2.4.0",
+    "sharp": "^0.35.5"
+  }
+}

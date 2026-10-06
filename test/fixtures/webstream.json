@@ -1,0 +1,16 @@
+{
+  "streamName": "Spa 2026",
+  "userFirstName": "A", "userLastName": "B", "streamCtag": "FT=-@RU=x@S=1", "itemsReturned": "4",
+  "photos": [
+    { "batchGuid": "b1", "photoGuid": "G-1", "caption": "Pit lane", "dateCreated": "2026-09-12T10:00:00Z", "batchDateCreated": "2026-09-12T12:00:00Z",
+      "derivatives": { "342": { "checksum": "c-1-small", "fileSize": "20000", "width": "342", "height": "228" },
+                       "2049": { "checksum": "c-1-big", "fileSize": "900000", "width": "2049", "height": "1366" } } },
+    { "batchGuid": "b1", "photoGuid": "G-2", "caption": "", "dateCreated": "2026-09-12T10:05:00Z",
+      "derivatives": { "2049": { "checksum": "c-2", "fileSize": "800000", "width": "1366", "height": "2049" },
+                       "225": { "checksum": "c-2-small", "fileSize": "9000", "width": "150", "height": "225" } } },
+    { "batchGuid": "b2", "photoGuid": "G-VID", "mediaAssetType": "video", "dateCreated": "2026-09-12T10:06:00Z",
+      "derivatives": { "720p": { "checksum": "c-v", "fileSize": "9000000", "width": "1280", "height": "720" },
+                       "PosterFrame": { "checksum": "c-vp", "fileSize": "30000", "width": "1280", "height": "720" } } },
+    { "batchGuid": "b2", "photoGuid": "G-NOCHK", "derivatives": { "2049": { "width": "100", "height": "100" } } }
+  ]
+}

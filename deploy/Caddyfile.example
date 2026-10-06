@@ -1,0 +1,6 @@
+# Caddy gives you automatic HTTPS and compression (the app itself does not compress).
+# Caddy only compresses text-like responses, so photos and album zips pass through untouched.
+photos.example.com {
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:3000
+}

@@ -1,0 +1,13 @@
+services:
+  photolib:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"   # put Caddy / cloudflared in front
+    environment:
+      PUBLIC_URL: "https://photos.example.com"
+      TRUST_PROXY: "172.16.0.0/12,loopback"   # docker network gateway
+    volumes:
+      - ./data:/app/data
+    mem_limit: 600m
+# first run:  docker compose run --rm -e PHOTOLIB_PASSWORD='choose-a-long-one' photolib npm run set-password
