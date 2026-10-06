@@ -42,10 +42,18 @@ const ICONS = {
   next: '<path d="M9 5l7 7-7 7"/>',
   zoom: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.4-4.4M11 8.5v5M8.5 11h5"/>',
   search: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.4-4.4"/>',
+  instagram: '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".7"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.8 7.2l8.2 6 8.2-6"/>',
+  facebook: '<path d="M14.2 21v-7.6h2.6l.4-3h-3V8.5c0-.9.3-1.5 1.5-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H8.600v3h2.600V21z"/>',
+  tiktok: '<path d="M16.6 4.2c.3 1.9 1.4 3.2 3.4 3.4v3.100c-1.300 0-2.500-.4-3.400-1v5.400c0 3-2.300 5.100-5.100 5.100S6.400 18.100 6.400 15.300c0-3.100 2.600-5.300 5.700-5v3.200c-1.400-.4-2.600.6-2.600 1.900 0 1.100.9 2 2 2s2-.8 2-2.100V4.200z"/>',
+  youtube: '<path d="M21.600 7.500a2.500 2.500 0 0 0-1.800-1.800C18.200 5.300 12 5.300 12 5.300s-6.200 0-7.800.4a2.500 2.500 0 0 0-1.800 1.800C2 9.100 2 12 2 12s0 2.900.4 4.500a2.500 2.500 0 0 0 1.800 1.800c1.600.4 7.800.4 7.800.4s6.200 0 7.800-.4a2.500 2.500 0 0 0 1.800-1.800c.4-1.600.4-4.500.4-4.500s0-2.900-.4-4.500zM10 15V9l5.200 3z"/>',
+  x: '<path d="M17.600 3.500h3L14 11l7.700 9.500h-6l-4.700-5.900-5.300 5.900H2.700l7.100-8L2.300 3.500h6.200l4.200 5.400zm-1.100 15.200h1.700L7.500 5.200H5.700z"/>',
+  telegram: '<path d="M21.200 4.500 2.800 11.600c-.9.300-.9.900-.2 1.100l4.700 1.500 1.800 5.600c.2.600.4.800.8.800.4 0 .6-.2.900-.5l2.200-2.100 4.600 3.400c.8.500 1.500.2 1.700-.8l3-14.200c.3-1.200-.4-1.700-1.100-1.400zM8.400 13.400l9.200-5.800c.4-.3.800-.1.500.2l-7.600 6.900-.3 3.300z"/>',
   arrowDown: '<path d="M12 5v14m0 0l-6-6m6 6l6-6"/>',
 };
+const FILLED = new Set(['facebook', 'tiktok', 'youtube', 'x', 'telegram']); // brand glyphs are solid shapes
 export const icon = (name, cls = '') =>
-  raw(`<svg class="i ${cls}" aria-hidden="true" focusable="false"><use href="#i-${name}"/></svg>`);
+  raw(`<svg class="i ${FILLED.has(name) ? 'fill ' : ''}${cls}" aria-hidden="true" focusable="false"><use href="#i-${name}"/></svg>`);
 const sprite = () =>
   `<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">${Object.entries(ICONS)
     .map(([k, v]) => `<symbol id="i-${k}" viewBox="0 0 24 24">${v}</symbol>`)

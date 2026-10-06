@@ -10,6 +10,7 @@ a:hover{color:var(--accent2)}
 h1,h2,h3{line-height:1.15;letter-spacing:-.02em;margin:0}
 .dim{color:var(--text-dim)}
 .i{width:1.25em;height:1.25em;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.i.fill{fill:currentColor;stroke:none}
 .wrap{width:100%;max-width:1440px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
 
 /* header / footer */

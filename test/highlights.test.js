@@ -193,3 +193,38 @@ test('stylesheet never styles the bare .book class (it is also on <body>, which 
   const bare = selectors.filter((sel) => /^\.book(\.[\w-]+|:[\w-]+(\([^)]*\))?)*$/.test(sel));
   assert.deepEqual(bare, [], 'scope 3D-book rules with .stage');
 });
+
+test('social links: handles and links are normalised, unsafe values are rejected, icons render where expected', async () => {
+  const { normalizeSocial, socialLinks } = await import('../src/social.js');
+  assert.equal(normalizeSocial('instagram', '@ugis.photo'), 'https://instagram.com/ugis.photo');
+  assert.equal(normalizeSocial('tiktok', 'ugis'), 'https://www.tiktok.com/@ugis');
+  assert.equal(normalizeSocial('x', 'https://x.com/someone'), 'https://x.com/someone');
+  assert.equal(normalizeSocial('facebook', ''), '');
+  for (const bad of ['javascript:alert(1)', 'data:text/html,hi', 'ftp://x.com/a', 'a b', '<script>', 'x'.repeat(400)]) assert.equal(normalizeSocial('instagram', bad), null, bad);
+  assert.deepEqual(socialLinks({ instagram: '@a', contact_email: 'me@example.com', tiktok: 'nope nope' }).map((l) => l.key), ['instagram', 'mail']);
+
+  // admin API validates and stores the canonical link
+  assert.equal((await api('PATCH', '/settings', { youtube: 'javascript:alert(1)' })).res.status, 400);
+  const ok = await api('PATCH', '/settings', { instagram: '@ugis', youtube: 'https://youtube.com/@ugis', contact_email: 'me@example.com', telegram: '', facebook: '' });
+  assert.equal(ok.res.status, 200);
+  assert.equal(ok.body.settings.instagram, 'https://instagram.com/ugis');
+
+  await api('PATCH', '/settings', { highlights: [ids[2], ids[1], ids[0]] });
+  const html = await home();
+  const cover = html.slice(html.indexOf('class="cover page face front"'), html.indexOf('</article>', html.indexOf('class="cover page face front"')));
+  assert.match(cover, /class="socials on-cover"/);
+  assert.match(cover, /href="https:\/\/instagram\.com\/ugis"\s+target="_blank"\s+rel="noopener" aria-label="Instagram"/);
+  assert.match(cover, /aria-label="YouTube"/);
+  assert.match(cover, /href="mailto:me@example\.com"\s+rel="noopener" aria-label="Email"/);
+  const back = html.slice(html.indexOf('class="page face back left"'), html.indexOf('</article>', html.indexOf('class="page face back left"')));
+  assert.match(back, /class="socials on-page"/, 'icons also on the open book');
+  assert.match(html, /class="stage has-socials"/);
+  assert.ok(!/>\s*(Instagram|YouTube)\s*</.test(cover), 'icons carry no visible text');
+  assert.match(await (await call('/about', { auth: false })).text(), /class="socials on-about"/);
+
+  // nothing set → nothing rendered
+  await api('PATCH', '/settings', { instagram: '', youtube: '', contact_email: '' });
+  const bare = await home();
+  assert.ok(!bare.includes('class="socials') && !bare.includes('has-socials'));
+  await api('PATCH', '/settings', { highlights: [ids[3]] });
+});

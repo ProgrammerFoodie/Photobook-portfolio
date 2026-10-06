@@ -95,6 +95,11 @@ export const DEFAULT_SETTINGS = {
   about: '',
   contact_email: '',
   instagram: '',
+  facebook: '',
+  tiktok: '',
+  youtube: '',
+  x: '',
+  telegram: '',
   default_allow_download: '1',
   icloud_sync_hours: '6',
   strip_gps: '1',
@@ -108,7 +113,7 @@ export const DEFAULT_SETTINGS = {
 };
 // Keys the admin UI may change through PATCH /admin/api/settings (never admin_password or theme_version).
 export const EDITABLE_SETTINGS = [
-  'site_title', 'tagline', 'about', 'contact_email', 'instagram',
+  'site_title', 'tagline', 'about', 'contact_email', 'instagram', 'facebook', 'tiktok', 'youtube', 'x', 'telegram',
   'default_allow_download', 'icloud_sync_hours', 'strip_gps', 'cover_subtitle', 'intro_title',
 ];
 

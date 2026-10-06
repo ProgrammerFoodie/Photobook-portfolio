@@ -48,6 +48,12 @@ and it rises further when the pointer is over it, hinting at the first page unde
 Phones held sideways and tablets in landscape get the same two-page spread as a desktop. If the script can't run, the pages are simply stacked.
 With fewer than two highlights the page shows just the cover; with none it uses your first album's cover photo.
 
+## Social links
+
+*Admin → Settings → Site* has fields for Instagram, Facebook, TikTok, YouTube, X and Telegram (a handle such as `@yourname` or a full link), and your contact email.
+Whatever is filled in appears as small icon-only links, with no visible text, on the **cover** (bottom left), on the **left page of the open book**, and on the **About page**;
+the email shows as a mail icon. Only plain handles and `http(s)` links are accepted.
+
 ## Tags: helping people find their car
 
 Tag photos with whatever people would search for: the model (`BMW M3`), the number (`#42`), a plate, the driver, a colour.

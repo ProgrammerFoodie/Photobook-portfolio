@@ -1,4 +1,5 @@
 import { html, raw, esc, icon, jsonForScript, layout } from '../html.js';
+import { socialLinks } from '../social.js';
 import { baseUrl, thumbUrl, displayUrl, ogUrl, derivedWidth, derivedHeight, formatDate, plural, formatBytes } from './helpers.js';
 
 const shell = (req, settings, args) =>
@@ -14,6 +15,11 @@ function searchBox({ action, value = '', options = [], id, label }) {
   <button class="btn" type="submit">${icon('search')} Search</button>
 </form>
 <datalist id="${id}">${options.map((o) => html`<option value="${o.name}"></option>`)}</datalist>`;
+}
+
+/** Icon-only social links (accessible names, opens in a new tab; email opens the mail app). */
+function socialRow(links, where) {
+  return links.length ? html`<div class="socials ${where}">${links.map((l) => html`<a class="social" href="${l.url}" ${l.key === 'mail' ? '' : raw('target="_blank"')} rel="noopener" aria-label="${l.label}" title="${l.label}">${icon(l.key)}</a>`)}</div>` : '';
 }
 
 // ---------- home: cover + highlights spread + contents ----------
@@ -38,11 +44,12 @@ export function homeView(req, { settings, albums, categories, activeCat, highlig
   const [hCover, hBig, ...small] = highlights;
   const coverPhoto = hCover || (albums[0] ? { ...albums[0].cover, album_slug: albums[0].slug, album_title: albums[0].title } : null);
   const year = new Date().getFullYear();
+  const links = socialLinks(settings);
   const showSpread = !!hBig;
   const [s1, s2, s3] = small;
   const body = html`
 <main class="landing wrap">
-  <section class="stage${showSpread ? '' : ' solo'}" aria-label="Title page">
+  <section class="stage${showSpread ? '' : ' solo'}${links.length ? ' has-socials' : ''}" aria-label="Title page">
     <div class="slider"><div class="book">
       ${showSpread ? html`
       <div class="shadow" aria-hidden="true"></div>
@@ -60,6 +67,7 @@ export function homeView(req, { settings, albums, categories, activeCat, highlig
             ${coverPhoto ? plate(coverPhoto, 'cover-photo', { sizes: '(min-width:1000px) 28vw, 80vw' }) : html`<div class="plate cover-photo empty-plate"></div>`}
           </div>
           <p class="cover-foot">${year}</p>
+          ${socialRow(links, 'on-cover')}
         </article>
         <article class="page face back left" aria-label="Page 2">
           <i class="shade" aria-hidden="true"></i>
@@ -74,6 +82,7 @@ export function homeView(req, { settings, albums, categories, activeCat, highlig
               ${s3 ? plate(s3, 'grow', { i: 2 }) : ''}
             </div>
           </div>
+          ${socialRow(links, 'on-page')}
           <span class="folio">Page 2</span>
         </article>
       </div>` : html`
@@ -85,6 +94,7 @@ export function homeView(req, { settings, albums, categories, activeCat, highlig
           ${coverPhoto ? plate(coverPhoto, 'cover-photo', { sizes: '(min-width:1000px) 28vw, 80vw' }) : html`<div class="plate cover-photo empty-plate"></div>`}
         </div>
         <p class="cover-foot">${year}</p>
+        ${socialRow(links, 'on-cover')}
       </article>`}
     </div></div>
     <a class="cue" href="#contents" aria-label="Contents">${icon('arrowDown')}</a>
@@ -251,24 +261,19 @@ function linkify(text) {
   const safe = esc(text);
   return raw(safe.replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)])/g, '<a href="$1" rel="noopener nofollow ugc" target="_blank">$1</a>'));
 }
-function instagramUrl(v) {
-  if (!v) return '';
-  if (/^https?:\/\//i.test(v)) return v;
-  return `https://instagram.com/${v.replace(/^@/, '')}`;
-}
 export function aboutView(req, { settings }) {
   const paragraphs = settings.about.split(/\n{2,}/).map((s) => s.trim()).filter(Boolean);
-  const insta = instagramUrl(settings.instagram);
+  const links = socialLinks(settings).filter((l) => l.key !== 'mail');
   const body = html`
 <main class="wrap"><article class="page single prose">
   <a class="crumb" href="/#contents">← Contents</a>
   <span class="bar" aria-hidden="true"></span>
   <h1>About</h1>
   ${paragraphs.length ? paragraphs.map((p) => html`<p>${linkify(p)}</p>`) : html`<p class="empty">Nothing here yet.</p>`}
-  ${settings.contact_email || insta ? html`
+  ${settings.contact_email || links.length ? html`
   <p class="contact">
     ${settings.contact_email ? html`<a class="btn" href="mailto:${settings.contact_email}">Email me</a>` : ''}
-    ${insta ? html`<a class="btn" href="${insta}" rel="noopener" target="_blank">Instagram</a>` : ''}
+    ${socialRow(links, 'on-about')}
   </p>` : ''}
 </article></main>`;
   return shell(req, settings, {

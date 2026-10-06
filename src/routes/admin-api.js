@@ -11,6 +11,7 @@ import { processPhoto } from '../images.js';
 import { resolveTheme, parseStoredTheme, DEFAULT_THEME, ROLE_LABELS } from '../theme.js';
 import { ensureCover, listPhotos, nextPhotoOrder, uniqueSlug, slugify, deletePhoto, deleteAlbum, getHighlightPhotos, setHighlightIds, MAX_HIGHLIGHTS } from '../store.js';
 import { startAlbumSync, syncingAlbumIds, parseSharedAlbumToken } from '../icloud.js';
+import { normalizeSocial, SOCIAL_KEYS } from '../social.js';
 import { parseTagList, addTags, removeTags, tagsForPhotos, allTags, renameTag, deleteTag, MAX_TAGS_PER_PHOTO } from '../tags.js';
 
 const router = express.Router();
@@ -291,6 +292,10 @@ router.patch('/settings', (req, res) => {
       const n = Number(v);
       if (!Number.isFinite(n) || n < 0 || n > 168) return bad(res, 'Sync interval must be 0–168 hours');
       v = String(Math.round(n));
+    } else if (SOCIAL_KEYS.includes(key)) {
+      const url = normalizeSocial(key, v);
+      if (url === null) return bad(res, `${key[0].toUpperCase()}${key.slice(1)}: enter a handle (like @name) or a link starting with https://`);
+      v = url;
     } else if (key === 'site_title') {
       v = String(v ?? '').trim().slice(0, 60);
       if (!v) return bad(res, 'Site title cannot be empty');
