@@ -43,9 +43,9 @@ You choose what appears there:
 
 On a desktop screen the title page is a full-screen book that stays **closed until you click it**. There is no button or text: the cover slowly lifts, a glint of light crosses it,
 and it rises further when the pointer is over it, hinting at the first page underneath. Clicking swings it open and the photos settle onto the pages
-(keyboard users get an invisible “Open the book” button; visitors who prefer reduced motion see the book already open).
+(keyboard users get an invisible “Open the book” button; visitors who prefer reduced motion get the same book, but it opens and turns without any movement).
 **On phones held upright** (and portrait tablets) the book is shown one page at a time: tap the closed cover to open it, then swipe sideways, or tap the folded page corner, to turn to the next page.
-Phones held sideways and tablets in landscape get the same two-page spread as a desktop. If the browser can't run the effect, the pages are simply stacked.
+Phones held sideways and tablets in landscape get the same two-page spread as a desktop. If the script can't run, the pages are simply stacked.
 With fewer than two highlights the page shows just the cover; with none it uses your first album's cover photo.
 
 ## Tags: helping people find their car

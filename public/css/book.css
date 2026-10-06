@@ -137,7 +137,7 @@ body.book::before{content:"";position:fixed;inset:0;z-index:-1;background:linear
 
 /* ---------- click-to-open mode (book.js adds .manual) ----------
    Everything follows two numbers set by book.js: --p (0 closed … 1 open) and --v (page view, phones: 0 left page … 1 right page). */
-.stage{--ka:1;--kb:0;--kc:-1}
+.stage{--ka:1;--kb:0;--kc:-1;--p:0;--v:0}
 .hit{position:absolute;z-index:6;padding:0;border:0;border-radius:4px;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .hit:focus-visible{outline:3px solid var(--accent);outline-offset:-10px}
 .stage.open .hit{display:none}
@@ -156,6 +156,11 @@ body.book::before{content:"";position:fixed;inset:0;z-index:-1;background:linear
   .stage.manual.open .collage .plate{animation:rise .95s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(1.2s + var(--i,0)*.17s)}
   .stage.manual.open .folio{animation:fadeIn .8s 1.9s both}
   .stage.manual.open .cue{animation:cueIn .9s 3s ease-out both}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .stage.manual:not(.open) .face.front::after{display:none}
+  .stage.manual.open .collage .plate,.stage.manual.open .collage .note,.stage.manual.open .folio,.stage.manual.open .cue{opacity:1}
 }
 
 /* ---------- portrait phones & tablets: the book is turned one page at a time (book.js adds .pager) ----------
@@ -222,8 +227,6 @@ body.book::before{content:"";position:fixed;inset:0;z-index:-1;background:linear
   .stage.pager.opened.view-left .turn.next,.stage.pager.opened.view-right .turn.prev{animation:flap 3s 1.4s ease-in-out infinite}
 }
 
-@property --p{syntax:'<number>';inherits:true;initial-value:0}
-@property --v{syntax:'<number>';inherits:true;initial-value:0}
 @keyframes flap{0%,68%,100%{transform:scale(1)}84%{transform:scale(1.24)}}
 @keyframes sheen{0%{background-position:125% 0}24%,100%{background-position:-70% 0}}
 @keyframes bookIn{from{opacity:0;transform:translateY(7vh) scale(.92) rotateX(12deg)}to{opacity:1;transform:none}}
