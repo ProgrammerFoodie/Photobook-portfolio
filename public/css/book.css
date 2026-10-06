@@ -39,7 +39,7 @@ body.book::before{content:"";position:fixed;inset:0;z-index:-1;background:linear
 /* ---------- landing: the book ---------- */
 /* Small screens: the pages are simply stacked. */
 .stage{display:grid;gap:18px;max-width:560px;margin:0 auto;padding-top:clamp(14px,4vw,30px)}
-.slider,.book,.flip{display:contents}
+.slider,.stage .book,.flip{display:contents} /* scoped: <body> also has the class "book" */
 .shadow,.shade{display:none}
 .stage .cover{order:1}
 .stage .face.back{order:2}
@@ -86,7 +86,7 @@ body.book::before{content:"";position:fixed;inset:0;z-index:-1;background:linear
     max-width:none;margin:0;padding:var(--m) var(--m) 0;height:100vh;height:100dvh;min-height:340px;
     perspective:3200px;perspective-origin:50% 38%;overflow-x:clip}
   .slider{display:block;width:100%;height:100%;transform-style:preserve-3d}
-  .book{display:block;position:relative;height:100%;width:min(100%,calc(var(--h)*2.5));margin:0 auto;transform-style:preserve-3d}
+  .stage .book{display:block;position:relative;height:100%;width:min(100%,calc(var(--h)*2.5));margin:0 auto;transform-style:preserve-3d}
   .stage.solo .book{width:calc(var(--h)*.78)}
   .shadow{display:block;position:absolute;left:0;right:0;top:4%;bottom:-2.4%;border-radius:8px;
     background:color-mix(in srgb,var(--ink) 62%,transparent);filter:blur(2.4vmin)}

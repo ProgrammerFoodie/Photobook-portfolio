@@ -185,3 +185,11 @@ test('the closed book carries no call-to-action text: the only link is an icon w
   assert.ok(!/click|tap|open the book|contents\s*<svg|press/i.test(stage.replace(/aria-label="Contents"/, '')), 'no visible prompt text on the title page');
   await api('PATCH', '/settings', { highlights: [ids[3]] });
 });
+
+test('stylesheet never styles the bare .book class (it is also on <body>, which would trap the photo viewer)', async () => {
+  const css = fs.readFileSync(new URL('../public/css/book.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const selectors = [...css.matchAll(/([^{}]+)\{/g)].map((m) => m[1].trim()).filter((x) => !x.startsWith('@')).flatMap((x) => x.split(',').map((y) => y.trim()));
+  // e.g. ".book{transform-style:preserve-3d}" would make <body> the containing block of position:fixed overlays
+  const bare = selectors.filter((sel) => /^\.book(\.[\w-]+|:[\w-]+(\([^)]*\))?)*$/.test(sel));
+  assert.deepEqual(bare, [], 'scope 3D-book rules with .stage');
+});
