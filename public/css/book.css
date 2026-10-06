@@ -41,8 +41,9 @@ body.book::before{content:"";position:fixed;inset:0;z-index:-1;background:linear
 .socials .social{display:grid;place-items:center;width:clamp(28px,7.6cqw,40px);height:clamp(28px,7.6cqw,40px);border-radius:50%;
   color:white;background:var(--surface);border:0;box-shadow:0 1px 3px color-mix(in srgb,var(--surface) 55%,transparent);
   transition:color .2s,background .2s,transform .2s}
-.page .socials .social,.sheet .socials .social{color:white}
-.socials .social:hover{color:white;background:var(--accent2);transform:translateY(-2px)}
+/* beats the general ".book .page a:not(.btn):not(.chip)" link colour (specificity), which painted the glyphs brown on the brown circle */
+.book .page .socials.socials a.social,.book .sheet .socials.socials a.social{color:white}
+.socials .social:hover,.book .page .socials.socials a.social:hover,.book .sheet .socials.socials a.social:hover{color:white;background:var(--accent2);transform:translateY(-2px)}
 .socials .social .i{width:54%;height:54%}
 .socials .social:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .socials.on-cover{position:absolute;left:18%;right:33%;bottom:3.4%;z-index:2}
