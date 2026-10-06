@@ -51,9 +51,9 @@ after(() => server.close());
 
 test('landing page without highlights falls back to the first album cover', async () => {
   const html = await home();
-  assert.match(html, /class="cover page"/);
+  assert.match(html, /class="cover page face front"/);
   assert.match(html, /UGIS|Photolib/i);
-  assert.ok(!html.includes('class="spread"'), 'no spread without a second highlight');
+  assert.ok(!html.includes('class="flip"') && !html.includes('class="leaf right page"'), 'no opening spread without a second highlight');
   assert.match(html, /class="chapters"/);
   assert.match(html, /<span class="num">01<\/span>/);
 });
@@ -88,7 +88,9 @@ test('landing page lays the highlights out as cover, large page and small photos
   assert.deepEqual(byClass('tall'), [ids[0]]);
   assert.deepEqual(byClass('square'), [ids[3]]);
   assert.deepEqual(byClass('grow'), [ids[4]]);
-  assert.match(html, /class="spread"/);
+  assert.match(html, /class="flip"/, 'the cover flips open');
+  assert.match(html, /class="leaf right page"/, 'the large photo is the right-hand page');
+  assert.match(html, /class="page face back left"/, 'the cover\'s back is the left page');
   assert.match(html, new RegExp(`property="og:image" content="[^"]*/img/${ids[2]}/og\\.jpg`), 'cover photo is the link preview');
   assert.match(html, /Page 2/);
 });
@@ -104,8 +106,9 @@ test('cover and intro texts come from settings and are escaped', async () => {
   assert.match(html, /Cars &amp; Drift/);
   assert.match(html, /<h2>Hello &quot;you&quot;<\/h2>/);
   assert.match(html, /First paragraph about me\./);
-  const spread = html.slice(html.indexOf('class="spread"'), html.indexOf('</article>', html.indexOf('class="spread"')));
-  assert.ok(!spread.includes('Second paragraph'), 'only the first paragraph is shown');
+  const left = html.slice(html.indexOf('class="page face back left"'), html.indexOf('</article>', html.indexOf('class="page face back left"')));
+  assert.ok(left.includes('First paragraph about me.'));
+  assert.ok(!left.includes('Second paragraph'), 'only the first paragraph is shown');
   assert.ok(!html.includes('<b>Photo</b>'));
 });
 
@@ -151,4 +154,34 @@ test('book colours: paper, ink and links stay readable with the default palette'
   assert.ok(contrastRatio(ink, DEFAULT_THEME.accent) >= 4.5, 'button text on the accent colour');
   const css = buildThemeCss(null);
   for (const token of ['--desk:', '--paper:', '--ink:', '--rule:', '--link:', '--font-serif:']) assert.ok(css.includes(token), token);
+});
+
+test('there is no top navigation bar; About is reachable from the footer and every page links back', async () => {
+  for (const url of ['/', '/a/shown', '/about', '/search?q=zzz']) {
+    const html = await (await call(url, { auth: false })).text();
+    assert.ok(!html.includes('class="site-header"'), `${url} has no header bar`);
+    assert.ok(!html.includes('aria-label="Main"'), `${url} has no main nav`);
+    assert.match(html, /<footer class="site-footer">[\s\S]*href="\/about"/, `${url} footer links to About`);
+  }
+  for (const url of ['/about', '/search?q=zzz', '/a/shown']) {
+    assert.match(await (await call(url, { auth: false })).text(), /class="crumb" href="\/#contents"/, `${url} links back to the Contents`);
+  }
+});
+
+test('the landing page loads the opening-sequence script only when there is a book to open', async () => {
+  await api('PATCH', '/settings', { highlights: [ids[2], ids[1], ids[0]] });
+  const withSpread = await home();
+  assert.match(withSpread, /src="\/js\/book\.js\?v=/);
+  await api('PATCH', '/settings', { highlights: [] });
+  assert.ok(!(await home()).includes('/js/book.js'), 'a lone cover has nothing to wait for');
+  await api('PATCH', '/settings', { highlights: [ids[3]] });
+});
+
+test('the closed book carries no call-to-action text: the only link is an icon with an accessible name', async () => {
+  await api('PATCH', '/settings', { highlights: [ids[2], ids[1], ids[0]] });
+  const html = await home();
+  const stage = html.slice(html.indexOf('<section class="stage'), html.indexOf('id="contents"'));
+  assert.match(stage, /<a class="cue" href="#contents" aria-label="Contents"><svg/);
+  assert.ok(!/click|tap|open the book|contents\s*<svg|press/i.test(stage.replace(/aria-label="Contents"/, '')), 'no visible prompt text on the title page');
+  await api('PATCH', '/settings', { highlights: [ids[3]] });
 });

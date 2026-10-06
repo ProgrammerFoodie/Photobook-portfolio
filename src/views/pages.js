@@ -27,9 +27,10 @@ function introText(about, fallback) {
 }
 
 /** A highlight photo as a framed figure that opens in the viewer on its album page. */
-function plate(p, cls = '', alt = '') {
-  return html`<figure class="plate ${cls}" style="--c:${p.color}"><a href="/a/${p.album_slug}/p/${p.id}">
-    <img src="${thumbUrl(p)}" width="${derivedWidth(p, 800)}" height="${derivedHeight(p, 800)}" alt="${alt || p.caption || p.album_title}" decoding="async"></a></figure>`;
+function plate(p, cls = '', { i = 0, sizes = '(min-width:1000px) 20vw, 60vw' } = {}) {
+  return html`<figure class="plate ${cls}" style="--c:${p.color};--i:${i}"><a href="/a/${p.album_slug}/p/${p.id}">
+    <img src="${thumbUrl(p)}" srcset="${thumbUrl(p)} ${derivedWidth(p, 800)}w, ${displayUrl(p)} ${derivedWidth(p, 2048)}w" sizes="${sizes}"
+      width="${derivedWidth(p, 800)}" height="${derivedHeight(p, 800)}" alt="${p.caption || p.album_title}" decoding="async"></a></figure>`;
 }
 
 export function homeView(req, { settings, albums, categories, activeCat, highlights = [], suggestions = [] }) {
@@ -42,38 +43,52 @@ export function homeView(req, { settings, albums, categories, activeCat, highlig
   const body = html`
 <main class="landing wrap">
   <section class="stage${showSpread ? '' : ' solo'}" aria-label="Title page">
-    <article class="cover page" aria-label="Cover">
-      <p class="cover-kicker">${settings.tagline}</p>
-      <h1 class="cover-title">${settings.site_title}${settings.cover_subtitle ? html`<small>${settings.cover_subtitle}</small>` : ''}</h1>
-      <div class="cover-art">
-        <span class="block" aria-hidden="true"></span>
-        ${coverPhoto ? plate(coverPhoto, 'cover-photo') : html`<div class="plate cover-photo empty-plate"></div>`}
-      </div>
-      <p class="cover-foot">${year}</p>
-    </article>
-    ${showSpread ? html`
-    <article class="spread" aria-label="Highlights">
-      <div class="page left">
-        <div class="collage">
-          ${s1 || s2 ? html`<div class="col">${s1 ? plate(s1, 'tall') : ''}${s2 ? plate(s2, 'square') : ''}</div>` : ''}
-          <div class="col">
-            <div class="note">
-              <h2>${settings.intro_title}</h2>
-              <p>${introText(settings.about, settings.tagline)}</p>
-              <a class="more-link" href="/about">About me →</a>
-            </div>
-            ${s3 ? plate(s3, 'grow') : ''}
-          </div>
-        </div>
-        <span class="folio">Page 2</span>
-      </div>
-      <div class="page right">
-        ${plate(hBig, 'big')}
+    <div class="slider"><div class="book">
+      ${showSpread ? html`
+      <div class="shadow" aria-hidden="true"></div>
+      <article class="leaf right page" aria-label="Page 3">
+        ${plate(hBig, 'big', { sizes: '(min-width:1000px) 42vw, 90vw' })}
         <span class="folio end">Page 3</span>
-      </div>
-    </article>` : ''}
+      </article>
+      <div class="flip">
+        <article class="cover page face front" aria-label="Cover">
+          <i class="shade" aria-hidden="true"></i>
+          <p class="cover-kicker">${settings.tagline}</p>
+          <h1 class="cover-title">${settings.site_title}${settings.cover_subtitle ? html`<small>${settings.cover_subtitle}</small>` : ''}</h1>
+          <div class="cover-art">
+            <span class="block" aria-hidden="true"></span>
+            ${coverPhoto ? plate(coverPhoto, 'cover-photo', { sizes: '(min-width:1000px) 28vw, 80vw' }) : html`<div class="plate cover-photo empty-plate"></div>`}
+          </div>
+          <p class="cover-foot">${year}</p>
+        </article>
+        <article class="page face back left" aria-label="Page 2">
+          <i class="shade" aria-hidden="true"></i>
+          <div class="collage">
+            ${s1 || s2 ? html`<div class="col">${s1 ? plate(s1, 'tall', { i: 0 }) : ''}${s2 ? plate(s2, 'square', { i: 1 }) : ''}</div>` : ''}
+            <div class="col">
+              <div class="note">
+                <h2>${settings.intro_title}</h2>
+                <p>${introText(settings.about, settings.tagline)}</p>
+                <a class="more-link" href="/about">About me →</a>
+              </div>
+              ${s3 ? plate(s3, 'grow', { i: 2 }) : ''}
+            </div>
+          </div>
+          <span class="folio">Page 2</span>
+        </article>
+      </div>` : html`
+      <article class="cover page face front" aria-label="Cover">
+        <p class="cover-kicker">${settings.tagline}</p>
+        <h1 class="cover-title">${settings.site_title}${settings.cover_subtitle ? html`<small>${settings.cover_subtitle}</small>` : ''}</h1>
+        <div class="cover-art">
+          <span class="block" aria-hidden="true"></span>
+          ${coverPhoto ? plate(coverPhoto, 'cover-photo', { sizes: '(min-width:1000px) 28vw, 80vw' }) : html`<div class="plate cover-photo empty-plate"></div>`}
+        </div>
+        <p class="cover-foot">${year}</p>
+      </article>`}
+    </div></div>
+    <a class="cue" href="#contents" aria-label="Contents">${icon('arrowDown')}</a>
   </section>
-  <p class="open-row"><a class="btn btn-primary" href="#contents">Open the book ${icon('arrowDown')}</a></p>
 
   <section class="sheet" id="contents" aria-labelledby="contents-h">
     <header class="sheet-head"><span class="bar" aria-hidden="true"></span><h2 id="contents-h">Contents</h2></header>
@@ -102,7 +117,7 @@ export function homeView(req, { settings, albums, categories, activeCat, highlig
       title: settings.site_title, description: settings.tagline, url: `${base}/`,
       image: coverPhoto ? base + ogUrl(coverPhoto) : '',
     },
-    active: 'albums', body, scripts: [],
+    active: 'albums', body, scripts: showSpread ? ['/js/book.js'] : [],
   });
 }
 
@@ -206,6 +221,7 @@ export function searchView(req, { settings, q, groups, count, more, suggestions 
   const body = html`
 <main class="wrap results"><div class="sheet">
   <header class="sheet-head">
+    <a class="crumb" href="/#contents">← Contents</a>
     <span class="bar" aria-hidden="true"></span><h1>Find your car</h1>
     <p class="meta">Search every album by car model, number, plate or caption.</p>
   </header>
@@ -245,6 +261,7 @@ export function aboutView(req, { settings }) {
   const insta = instagramUrl(settings.instagram);
   const body = html`
 <main class="wrap"><article class="page single prose">
+  <a class="crumb" href="/#contents">← Contents</a>
   <span class="bar" aria-hidden="true"></span>
   <h1>About</h1>
   ${paragraphs.length ? paragraphs.map((p) => html`<p>${linkify(p)}</p>`) : html`<p class="empty">Nothing here yet.</p>`}

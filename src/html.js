@@ -81,15 +81,8 @@ ${meta.image ? html`<meta property="og:image" content="${meta.image}"><meta name
 </head>
 <body class="book ${bodyClass}">
 ${raw(sprite())}
-<header class="site-header">
-  <a class="brand" href="/">${siteTitle}</a>
-  <nav aria-label="Main">
-    <a href="/" ${active === 'albums' ? raw('aria-current="page"') : ''}>Albums</a>
-    <a href="/about" ${active === 'about' ? raw('aria-current="page"') : ''}>About</a>
-  </nav>
-</header>
 ${body}
-<footer class="site-footer"><span>© ${new Date().getFullYear()} ${siteTitle}</span></footer>
+<footer class="site-footer"><span>© ${new Date().getFullYear()} ${siteTitle}</span> · <a href="/about">About</a></footer>
 <div class="toasts" role="status" aria-live="polite"></div>
 ${scripts.map((s) => html`<script src="${s}?v=${ASSET_VERSION}" defer></script>`)}
 </body>

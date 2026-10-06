@@ -13,13 +13,6 @@ h1,h2,h3{line-height:1.15;letter-spacing:-.02em;margin:0}
 .wrap{width:100%;max-width:1440px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
 
 /* header / footer */
-.site-header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px clamp(16px,4vw,40px);background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid color-mix(in srgb,var(--border) 50%,transparent)}
-.brand{font-weight:700;font-size:1.15rem;letter-spacing:-.02em;color:var(--text)}
-.brand:hover{color:var(--accent)}
-.site-header nav{display:flex;gap:22px}
-.site-header nav a{color:var(--text-dim);font-size:.95rem;padding:4px 0;border-bottom:2px solid transparent}
-.site-header nav a:hover{color:var(--text)}
-.site-header nav a[aria-current]{color:var(--text);border-bottom-color:var(--accent)}
 .site-footer{padding:36px clamp(16px,4vw,40px);color:var(--text-dim);font-size:.85rem;text-align:center}
 
 /* hero / intro */

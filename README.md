@@ -41,6 +41,9 @@ You choose what appears there:
 3. Set the cover wording in *Settings → Site*: site title (big cover title), tagline (small line above it), cover subtitle (e.g. “Portfolio”), the heading for the intro text,
    and your *About* text, whose first paragraph is the intro on the spread.
 
+On a desktop screen the title page is a full-screen book that stays **closed until you click it**. There is no button or text: the cover slowly lifts, a glint of light crosses it,
+and it rises further when the pointer is over it, hinting at the first page underneath. Clicking swings it open and the photos settle onto the pages
+(keyboard users get an invisible “Open the book” button; visitors who prefer reduced motion see the book already open). On phones and tablets the pages are simply stacked.
 With fewer than two highlights the page shows just the cover; with none it uses your first album's cover photo.
 
 ## Tags: helping people find their car
