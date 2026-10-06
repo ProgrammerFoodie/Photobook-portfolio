@@ -11,18 +11,22 @@ export const SOCIALS = [
 export const SOCIAL_KEYS = SOCIALS.map((s) => s.key);
 
 /**
- * "@name" or "name" → the network's profile URL; an http(s) link is kept as given.
- * Returns '' for empty input and null for anything that is not a plain handle or a web link
- * (so "javascript:…" and the like can never end up in an href).
+ * What people paste: "@name", "name", "facebook.com/name", "www.tiktok.com/@name" or a full https:// link
+ * → a clean web link. Returns '' for empty input and null for anything that is not a handle or a web
+ * address (so "javascript:…" and the like can never end up in an href).
  */
 export function normalizeSocial(key, raw) {
   const value = String(raw ?? '').trim();
   if (!value) return '';
   if (value.length > 300) return null;
-  if (/^https?:\/\//i.test(value)) {
+  const hasScheme = /^[a-z][a-z0-9+.-]*:/i.test(value) && !/^[a-z0-9.-]+:\d+(\/|$)/i.test(value);
+  if (hasScheme && !/^https?:\/\//i.test(value)) return null; // javascript:, data:, ftp: …
+  // a web address: has a scheme, or a slash, or starts with www. / a known site name
+  if (hasScheme || value.includes('/') || /^(www\.|m\.)/i.test(value) || /^(facebook|fb|instagram|tiktok|youtube|youtu|x|twitter|t)\.(com|me|be)$/i.test(value)) {
     try {
-      const u = new URL(value);
-      return u.protocol === 'http:' || u.protocol === 'https:' ? u.toString() : null;
+      const u = new URL(hasScheme ? value : `https://${value}`);
+      if ((u.protocol !== 'http:' && u.protocol !== 'https:') || !u.hostname.includes('.') || u.username || u.password) return null;
+      return u.toString();
     } catch { return null; }
   }
   const social = SOCIALS.find((s) => s.key === key);

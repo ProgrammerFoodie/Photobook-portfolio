@@ -200,7 +200,14 @@ test('social links: handles and links are normalised, unsafe values are rejected
   assert.equal(normalizeSocial('tiktok', 'ugis'), 'https://www.tiktok.com/@ugis');
   assert.equal(normalizeSocial('x', 'https://x.com/someone'), 'https://x.com/someone');
   assert.equal(normalizeSocial('facebook', ''), '');
-  for (const bad of ['javascript:alert(1)', 'data:text/html,hi', 'ftp://x.com/a', 'a b', '<script>', 'x'.repeat(400)]) assert.equal(normalizeSocial('instagram', bad), null, bad);
+  // what people actually paste
+  assert.equal(normalizeSocial('facebook', 'facebook.com/ugis.photo'), 'https://facebook.com/ugis.photo');
+  assert.equal(normalizeSocial('facebook', 'www.facebook.com/ugis'), 'https://www.facebook.com/ugis');
+  assert.equal(normalizeSocial('tiktok', 'www.tiktok.com/@ugis'), 'https://www.tiktok.com/@ugis');
+  assert.equal(normalizeSocial('tiktok', 'tiktok.com/@ugis?lang=en'), 'https://tiktok.com/@ugis?lang=en');
+  assert.equal(normalizeSocial('tiktok', ' @ugis.photo '), 'https://www.tiktok.com/@ugis.photo');
+  assert.equal(normalizeSocial('instagram', 'ugis.photo'), 'https://instagram.com/ugis.photo', 'a dotted handle is still a handle');
+  for (const bad of ['x/y', 'https://user:pw@x.com/a', 'JaVaScRiPt:alert(1)', 'javascript:alert(1)', 'data:text/html,hi', 'ftp://x.com/a', 'a b', '<script>', 'x'.repeat(400)]) assert.equal(normalizeSocial('instagram', bad), null, bad);
   assert.deepEqual(socialLinks({ instagram: '@a', contact_email: 'me@example.com', tiktok: 'nope nope' }).map((l) => l.key), ['instagram', 'mail']);
 
   // admin API validates and stores the canonical link
