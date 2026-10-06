@@ -39,7 +39,7 @@ body.book::before{content:"";position:fixed;inset:0;z-index:-1;background:linear
 /* ---------- social icons (icon-only links) ---------- */
 .socials{display:flex;flex-wrap:wrap;gap:clamp(6px,1.7cqw,10px);align-items:center}
 .socials .social{display:grid;place-items:center;width:clamp(28px,7.6cqw,40px);height:clamp(28px,7.6cqw,40px);border-radius:50%;
-  color:var(--paper);background:var(--ink);border:0;box-shadow:0 1px 3px color-mix(in srgb,var(--ink) 50%,transparent);
+  color:var(--paper);background:var(--surface);border:0;box-shadow:0 1px 3px color-mix(in srgb,var(--surface) 55%,transparent);
   transition:color .2s,background .2s,transform .2s}
 .page .socials .social,.sheet .socials .social{color:var(--paper)}
 .socials .social:hover{color:var(--on-accent);background:var(--accent);transform:translateY(-2px)}
