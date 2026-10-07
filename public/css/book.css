@@ -295,9 +295,14 @@ body.book::before{content:"";position:fixed;inset:0;z-index:-1;background:linear
 .sheet .result-group .dim{color:var(--ink-dim)}
 
 /* contents: chapters */
-.chapters{list-style:none;margin:8px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:clamp(20px,2.8vw,40px) clamp(18px,2.6vw,34px)}
+.chapters{list-style:none;margin:8px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(20px,2.8vw,40px) clamp(18px,2.6vw,34px)}
+.chapters>li{max-width:560px} /* a lone album doesn't stretch across the whole page */
 .chapter{display:block;color:inherit}
-.chapter-img{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--c,var(--paper-shade))}
+.chapter-img{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--c,var(--paper-shade));transition:transform .3s,box-shadow .3s}
+.chapter:hover .chapter-img,.chapter:focus-visible .chapter-img{transform:translateY(-4px);box-shadow:0 14px 26px -12px color-mix(in srgb,var(--ink) 55%,transparent)}
+.chapter:focus-visible{outline:none}
+.chapter:focus-visible .chapter-img{outline:3px solid var(--accent);outline-offset:3px}
+.chapter:hover h3,.chapter:focus-visible h3{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:.2em}
 .chapter-img img{width:100%;height:100%;object-fit:cover;transition:transform .7s}
 .chapter:hover .chapter-img img{transform:scale(1.04)}
 .chapter .num{position:absolute;left:0;top:0;padding:.3em .75em .35em;background:var(--accent);color:var(--on-accent);font-family:var(--font-serif);font-weight:700;font-size:1.05rem}
@@ -343,4 +348,4 @@ body.book::before{content:"";position:fixed;inset:0;z-index:-1;background:linear
   .opener .plate.lead{inset:6%}
 }
 @media (max-width:640px){.page.single{margin-top:8px}}
-@media (prefers-reduced-motion:reduce){.plate img,.chapter-img img{transition:none}}
+@media (prefers-reduced-motion:reduce){.plate img,.chapter-img img,.chapter-img{transition:none}.chapter:hover .chapter-img,.chapter:focus-visible .chapter-img{transform:none}}
