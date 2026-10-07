@@ -84,19 +84,28 @@ You choose what appears there:
 1. Open any album in the admin and press **☆ Highlight** on up to five photos.
 2. In *Settings → Title page* put them in order: **1 = cover photo** (portrait photos suit it best), **2 = the large right-hand page**, **3–5 = the small photos** on the left page.
 3. Set the cover wording in *Settings → Site*: site title (big cover title), tagline (small line above it), cover subtitle (e.g. “Portfolio”), the heading for the intro text,
-   and your *About* text, whose first paragraph is the intro on the spread.
+   and your *About* text, whose first paragraph is the intro on the spread (see below).
 
-On a desktop screen the title page is a full-screen book that stays **closed until you click it**. There is no button or text: the cover slowly lifts, a glint of light crosses it,
-and it rises further when the pointer is over it, hinting at the first page underneath. Clicking swings it open and the photos settle onto the pages
-(keyboard users get an invisible “Open the book” button; visitors who prefer reduced motion get the same book, but it opens and turns without any movement).
+On a desktop screen the title page is a full-screen book that stays **closed until you click it**. The cover slowly lifts, a glint of light crosses it,
+and it rises further when the pointer is over it, hinting at the first page underneath. After about three seconds a small **“Open the book”** pill fades in on the cover.
+Clicking swings it open and the photos settle onto the pages; a labelled **“Albums”** button below the open book scrolls down to the contents
+(keyboard users get the same “Open the book” button; visitors who prefer reduced motion get the same book, but it opens and turns without any movement).
 **On phones held upright** (and portrait tablets) the book is shown one page at a time: tap the closed cover to open it, then swipe sideways, or tap the folded page corner, to turn to the next page.
 Phones held sideways and tablets in landscape get the same two-page spread as a desktop. If the script can't run, the pages are simply stacked.
 With fewer than two highlights the page shows just the cover; with none it uses your first album's cover photo.
 
+## The About text
+
+*Admin → Settings → Site → About text* has formatting buttons (bold, italic, heading, bulleted list, numbered list, link) and two live previews: **what the title page shows** and **what the About page shows**.
+You can also type the marks yourself: `**bold**`, `*italic*`, `## heading`, `- bullet`, `1. numbered`, `[text](https://link)`; a blank line starts a new paragraph. Anything else is shown as plain text.
+
+The intro on the title page is the **first paragraph, as plain text, cut at 256 characters** (back to a whole word, with “…”). A counter under the box shows how many characters you have,
+and the part that will be cut off is shown grey and struck through. The About page always shows the whole text.
+
 ## Social links
 
 *Admin → Settings → Site* has fields for Instagram, Facebook, TikTok, YouTube, X and Telegram (a handle such as `@yourname` or a full link), and your contact email.
-Whatever is filled in appears as small icon-only links, with no visible text, on the **cover** (bottom left), on the **left page of the open book**, and on the **About page**;
+Whatever is filled in appears as small icon-only links, with no visible text, on the **cover** (bottom left), on the **left page of the open book** (bottom right margin), and on the **About page**;
 the email shows as a mail icon. Only plain handles and `http(s)` links are accepted.
 
 ## Tags: helping people find their car
