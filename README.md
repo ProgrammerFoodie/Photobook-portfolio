@@ -10,10 +10,40 @@ Visitors can browse, search by tag to find their own car, view at original size,
 - Light pages: the styles and scripts total ≈ 50 KB (≈ 15 KB gzipped); an album page adds about 1 KB of HTML per photo (≈ 65 bytes once compressed: a 226-photo album is ≈ 15 KB over the wire). Photos load lazily.
 - Runs comfortably on 1 CPU / 1 GB RAM (photo processing is one-at-a-time; peak memory stayed under 180 MB while importing a 226-photo album).
 
+## What it looks like
+
+All screenshots in this README use generated demo images, a placeholder name and made-up numbers, not real photos or statistics.
+
+### The book
+
+The landing page is a closed photobook that fills the screen. It breathes, lifts when you hover and opens only when you click it, revealing your highlight photos.
+Below it, the contents page lists the albums, with search and category chips.
+
+| Closed (click to open) | Open |
+| --- | --- |
+| ![The closed cover with title, highlight photo and social icons](docs/screenshots/book-cover.jpg) | ![The open book: intro and highlights on the left page, the large photo on the right](docs/screenshots/book-open.jpg) |
+
+![Contents page: search box, category chips and a numbered album list](docs/screenshots/book-contents.jpg)
+
+### Albums, tags and the viewer
+
+Each album opens like a chapter, followed by a justified photo grid. Tag chips (and the search box) narrow the grid so people can find their own car; the filtered view can be shared or downloaded as a zip.
+
+| Album opener | Photo grid |
+| --- | --- |
+| ![Chapter opener with title, slideshow and download buttons](docs/screenshots/album-opener.jpg) | ![Justified photo grid with tag chips](docs/screenshots/album-grid.jpg) |
+| **Filtered by a tag** | **Fullscreen viewer** |
+| ![Grid filtered to one tag, with a link to download the whole album](docs/screenshots/tag-filter.jpg) | ![Fullscreen viewer with like, download, share, zoom, slideshow and tags](docs/screenshots/viewer.jpg) |
+
+### On a phone
+
+Portrait screens show the book one page at a time: tap the cover to open it, then swipe or tap the folded corner to turn the page. Landscape phones and tablets get the two-page spread.
+
+![Three phone screens: closed cover, first page, next page with folded corners](docs/screenshots/phone.jpg)
+
 ## Admin panel
 
 The admin is a small single-page app at `/admin`: what visitors are doing, albums and photos, the title page, tags and the colour palette.
-These screenshots use generated demo images and made-up numbers, not real photos or statistics.
 
 ![Dashboard: totals, most liked and most downloaded photos, albums by views](docs/screenshots/admin-dashboard.jpg)
 
