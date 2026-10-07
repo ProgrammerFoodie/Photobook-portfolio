@@ -526,7 +526,75 @@
       fields[key] = h('input', { type, class: 'input', value: s[key] ?? '', ...extra });
       return h('label', { class: 'field' }, label, fields[key]);
     };
-    fields.about = h('textarea', { class: 'input', value: s.about, placeholder: 'A few lines about you and your photography. Blank line = new paragraph.' });
+    fields.about = h('textarea', { class: 'input', id: 'about-text', rows: 10, maxlength: 5000, value: s.about, placeholder: 'A few lines about you and your photography. Blank line = new paragraph.' });
+
+    // --- About text: formatting buttons, the title-page cut-off, and a preview of the About page ---
+    const aboutCount = h('p', { class: 'note about-count', 'aria-live': 'polite' });
+    const aboutIntro = h('p', { class: 'about-intro' });
+    const aboutPage = h('div', { class: 'about-page' });
+    let aboutTimer = 0;
+    let aboutSeq = 0;
+    async function refreshAbout() {
+      const n = ++aboutSeq;
+      let r;
+      try { r = await api('POST', '/about/preview', { text: fields.about.value }); } catch { return; }
+      if (n !== aboutSeq) return;
+      const { shown, rest, total, max, truncated } = r.intro;
+      aboutCount.classList.toggle('warn', truncated);
+      aboutCount.textContent = truncated
+        ? `Title-page intro: ${total} characters, but only the first ${max} fit. The grey, struck-through part below is cut off (the About page still shows everything).`
+        : `Title-page intro: ${total} of ${max} characters, all of it fits.`;
+      clear(aboutIntro);
+      aboutIntro.append(shown || 'Nothing yet.');
+      if (truncated) aboutIntro.append('…', h('span', { class: 'cut' }, rest));
+      aboutPage.innerHTML = r.html; // already escaped by the server; only <p>, <ul>, <ol>, <h2>, <h3>, <strong>, <em>, <a>, <br>
+    }
+    const queueAbout = () => { clearTimeout(aboutTimer); aboutTimer = setTimeout(refreshAbout, 250); };
+    const changeAbout = () => { fields.about.focus(); fields.about.dispatchEvent(new Event('input')); };
+    const wrapAbout = (before, after, sample) => {
+      const t = fields.about;
+      const a = t.selectionStart; const b = t.selectionEnd;
+      const inner = t.value.slice(a, b) || sample;
+      t.setRangeText(before + inner + after, a, b, 'preserve');
+      t.setSelectionRange(a + before.length, a + before.length + inner.length);
+      changeAbout();
+    };
+    const prefixAbout = (make) => {
+      const t = fields.about;
+      const from = t.value.lastIndexOf('\n', t.selectionStart - 1) + 1;
+      let to = t.value.indexOf('\n', t.selectionEnd);
+      if (to < 0) to = t.value.length;
+      const lines = t.value.slice(from, to).split('\n');
+      const allMarked = lines.every((line, i) => make(i).re.test(line));
+      const out = lines.map((line, i) => (allMarked ? line.replace(make(i).re, '') : `${make(i).add}${line.replace(make(i).re, '')}`));
+      t.setRangeText(out.join('\n'), from, to, 'select');
+      changeAbout();
+    };
+    const tool = (label, title, onclick) => h('button', { type: 'button', class: 'btn sm', title, 'aria-label': title, onclick }, label);
+    const aboutTools = h('div', { class: 'about-tools', role: 'toolbar', 'aria-label': 'Formatting' },
+      tool(h('b', null, 'B'), 'Bold', () => wrapAbout('**', '**', 'bold text')),
+      tool(h('i', null, 'I'), 'Italic', () => wrapAbout('*', '*', 'italic text')),
+      tool('Heading', 'Heading', () => prefixAbout(() => ({ re: /^#{1,3}\s+/, add: '## ' }))),
+      tool('• List', 'Bulleted list', () => prefixAbout(() => ({ re: /^\s*[-*•]\s+/, add: '- ' }))),
+      tool('1. List', 'Numbered list', () => prefixAbout((i) => ({ re: /^\s*\d+[.)]\s+/, add: `${i + 1}. ` }))),
+      tool('Link', 'Link', () => {
+        const t = fields.about;
+        const label = t.value.slice(t.selectionStart, t.selectionEnd) || 'link text';
+        const url = prompt('Link address (starting with https://)', 'https://');
+        if (!url || !/^https?:\/\/\S+$/.test(url)) return;
+        t.setRangeText(`[${label}](${url})`, t.selectionStart, t.selectionEnd, 'end');
+        changeAbout();
+      }));
+    fields.about.addEventListener('input', queueAbout);
+    const aboutEditor = h('div', { class: 'field wide about-editor' },
+      h('label', { for: 'about-text' }, 'About text (its first paragraph is also the intro on the title page)'),
+      aboutTools, fields.about,
+      h('p', { class: 'note' }, 'Formatting: **bold**, *italic*, ## heading, - bullet, 1. numbered, [text](https://link). A blank line starts a new paragraph.'),
+      aboutCount,
+      h('div', { class: 'about-previews' },
+        h('div', null, h('h3', null, 'Title page shows'), aboutIntro),
+        h('div', null, h('h3', null, 'About page shows'), aboutPage)));
+    refreshAbout();
     fields.default_allow_download = h('input', { type: 'checkbox', checked: s.default_allow_download === '1' });
     fields.strip_gps = h('input', { type: 'checkbox', checked: s.strip_gps === '1' });
 
@@ -551,7 +619,7 @@
         text('tagline', 'Tagline (small line on the cover)', 'text', { maxlength: 200 }),
         text('cover_subtitle', 'Cover subtitle', 'text', { maxlength: 60, placeholder: 'Portfolio' }),
         text('intro_title', 'Heading of the intro on the title page', 'text', { maxlength: 60 }),
-        h('label', { class: 'field wide' }, 'About text (its first paragraph is also the intro on the title page)', fields.about),
+        aboutEditor,
         text('contact_email', 'Contact email', 'email'),
         text('instagram', 'Instagram (handle or link)', 'text', { placeholder: '@yourname' }),
         text('facebook', 'Facebook (page name or link)', 'text'),

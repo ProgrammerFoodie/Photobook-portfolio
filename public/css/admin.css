@@ -28,6 +28,17 @@ body.admin{display:block}
 .field{display:flex;flex-direction:column;gap:5px;font-size:.88rem;color:var(--text-dim)}
 .field input[type=text],.field input[type=email],.field input[type=url],.field input[type=password],.field input[type=number],.field select,.field textarea,.input{width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font:inherit;font-size:.95rem}
 .field textarea{min-height:110px;resize:vertical}
+.about-tools{display:flex;flex-wrap:wrap;gap:6px}
+.about-count{margin:0}
+.about-previews{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px 18px}
+.about-previews h3{font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);margin:0 0 6px}
+.about-intro,.about-page{margin:0;padding:12px 14px;border-radius:8px;background:var(--paper);color:var(--ink);font-size:.92rem;line-height:1.5}
+.about-intro .cut{color:var(--ink-dim);text-decoration:line-through;text-decoration-color:var(--accent2);opacity:.75}
+.about-page>:first-child{margin-top:0}
+.about-page>:last-child{margin-bottom:0}
+.about-page p,.about-page ul,.about-page ol{margin:0 0 .8em}
+.about-page h2,.about-page h3{font-family:var(--font-serif);color:var(--ink);margin:.9em 0 .3em}
+.about-page a{color:var(--link)}
 .field input:focus,.field select:focus,.field textarea:focus,.input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
 .check{display:flex;align-items:center;gap:9px;color:var(--text);font-size:.95rem;cursor:pointer}
 .check input{width:18px;height:18px;accent-color:var(--accent)}

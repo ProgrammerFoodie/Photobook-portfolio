@@ -57,6 +57,12 @@ h1,h2,h3{line-height:1.15;letter-spacing:-.02em;margin:0}
 .prose{max-width:720px;padding-top:clamp(32px,6vw,72px);padding-bottom:48px}
 .prose h1{font-size:clamp(2rem,5vw,3rem);margin-bottom:1rem}
 .prose p{margin:0 0 1.1rem}
+.prose ul,.prose ol{margin:0 0 1.1rem;padding-left:1.4em}
+.prose li{margin:0 0 .35rem}
+.prose li::marker{color:var(--accent2)}
+.prose h2{font-family:var(--font-serif);font-size:clamp(1.3rem,3vw,1.7rem);margin:1.8rem 0 .6rem}
+.prose h3{font-family:var(--font-serif);font-size:1.15rem;margin:1.4rem 0 .5rem}
+.prose strong{font-weight:700}
 .prose.center{text-align:center}
 .contact{display:flex;gap:10px;margin-top:28px}
 

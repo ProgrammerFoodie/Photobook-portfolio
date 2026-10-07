@@ -211,6 +211,24 @@ test('settings and palette changes reach the public site', async () => {
   assert.equal((await api('PATCH', '/settings', { theme: null })).body.theme.accent, '#E37C44', 'reset to defaults');
 });
 
+test('About text: the admin preview matches the public pages, and the title page cuts the intro at 256 characters', async () => {
+  const long = `${'Long intro word '.repeat(30).trim()}\n\n- Nikon D50\n- Nikon D300s\n\nLater **bold** paragraph.`;
+  const preview = await api('POST', '/about/preview', { text: long });
+  assert.equal(preview.res.status, 200);
+  assert.equal(preview.body.intro.max, 256);
+  assert.equal(preview.body.intro.truncated, true);
+  assert.ok(preview.body.intro.shown.length <= 256);
+  assert.match(preview.body.html, /<ul><li>Nikon D50<\/li><li>Nikon D300s<\/li><\/ul>/);
+  assert.match(preview.body.html, /<strong>bold<\/strong>/);
+  assert.ok(!(await call('/admin/api/about/preview', { method: 'POST', json: { text: 'x' }, auth: false })).ok, 'preview needs a signed-in admin');
+
+  await api('PATCH', '/settings', { about: long });
+  const about = await (await call('/about', { auth: false })).text();
+  assert.match(about, /<ul><li>Nikon D50<\/li>/, 'the About page shows the lists');
+  assert.match(about, /Later <strong>bold<\/strong> paragraph/);
+  await api('PATCH', '/settings', { about: '' });
+});
+
 test('login is rate limited', async () => {
   let last;
   for (let i = 0; i < 6; i++) last = await call('/admin/api/login', { method: 'POST', json: { password: 'wrong' }, auth: false });

@@ -1,5 +1,6 @@
 import { html, raw, esc, icon, jsonForScript, layout } from '../html.js';
 import { socialLinks } from '../social.js';
+import { introText, firstParagraph, renderAbout } from '../about.js';
 import { baseUrl, thumbUrl, displayUrl, ogUrl, derivedWidth, derivedHeight, formatDate, plural, formatBytes } from './helpers.js';
 
 const shell = (req, settings, args) =>
@@ -24,13 +25,6 @@ function socialRow(links, where) {
 
 // ---------- home: cover + highlights spread + contents ----------
 const pad2 = (n) => String(n).padStart(2, '0');
-
-/** First paragraph of the About text, trimmed to a readable length for the spread. */
-function introText(about, fallback) {
-  const first = String(about || '').split(/\n{2,}/).map((x) => x.trim()).find(Boolean) || fallback || '';
-  if (first.length <= 300) return first;
-  return first.slice(0, 300).replace(/\s+\S*$/, '') + '…';
-}
 
 /** A highlight photo as a framed figure that opens in the viewer on its album page. */
 function plate(p, cls = '', { i = 0, sizes = '(min-width:1000px) 20vw, 60vw', priority = false } = {}) {
@@ -259,19 +253,15 @@ export function searchView(req, { settings, q, groups, count, more, suggestions 
 }
 
 // ---------- about ----------
-function linkify(text) {
-  const safe = esc(text);
-  return raw(safe.replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)])/g, '<a href="$1" rel="noopener nofollow ugc" target="_blank">$1</a>'));
-}
 export function aboutView(req, { settings }) {
-  const paragraphs = settings.about.split(/\n{2,}/).map((s) => s.trim()).filter(Boolean);
+  const hasText = settings.about.trim().length > 0;
   const links = socialLinks(settings).filter((l) => l.key !== 'mail');
   const body = html`
 <main class="wrap"><article class="page single prose">
   <a class="crumb" href="/#contents">← Contents</a>
   <span class="bar" aria-hidden="true"></span>
   <h1>About</h1>
-  ${paragraphs.length ? paragraphs.map((p) => html`<p>${linkify(p)}</p>`) : html`<p class="empty">Nothing here yet.</p>`}
+  ${hasText ? renderAbout(settings.about) : html`<p class="empty">Nothing here yet.</p>`}
   ${settings.contact_email || links.length ? html`
   <p class="contact">
     ${settings.contact_email ? html`<a class="btn" href="mailto:${settings.contact_email}">Email me</a>` : ''}
@@ -279,7 +269,7 @@ export function aboutView(req, { settings }) {
   </p>` : ''}
 </article></main>`;
   return shell(req, settings, {
-    meta: { title: 'About', description: paragraphs[0]?.slice(0, 160) || settings.tagline, url: `${baseUrl(req)}/about` },
+    meta: { title: 'About', description: firstParagraph(settings.about).slice(0, 160) || settings.tagline, url: `${baseUrl(req)}/about` },
     active: 'about', body,
   });
 }

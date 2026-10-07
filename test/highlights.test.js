@@ -112,6 +112,18 @@ test('cover and intro texts come from settings and are escaped', async () => {
   assert.ok(!html.includes('<b>Photo</b>'));
 });
 
+test('the intro on the title page is cut at 256 characters, as plain text', async () => {
+  const para = 'Formatted **intro** word '.repeat(20).trim(); // longer than 256 characters
+  await api('PATCH', '/settings', { about: `${para}\n\nSecond paragraph.` });
+  const html = await home();
+  const left = html.slice(html.indexOf('class="page face back left"'), html.indexOf('</article>', html.indexOf('class="page face back left"')));
+  const shown = left.match(/<div class="note">[\s\S]*?<p>([\s\S]*?)<\/p>/)?.[1] ?? left.match(/<p>([^<]{200,})<\/p>/)?.[1];
+  assert.ok(shown, 'the intro paragraph is on the spread');
+  assert.ok(shown.endsWith('…'), 'a cut intro ends with an ellipsis');
+  assert.ok(shown.length <= 257, `intro is ${shown.length} characters`);
+  assert.ok(!shown.includes('**'), 'formatting marks are not printed on the title page');
+});
+
 test('hidden photos drop out of the landing page; deleting removes highlights', async () => {
   await api('PATCH', `/photos/${ids[1]}`, { is_hidden: true });
   const shown = plates(await home()).map(([, id]) => id);

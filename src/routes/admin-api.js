@@ -12,6 +12,7 @@ import { resolveTheme, parseStoredTheme, DEFAULT_THEME, ROLE_LABELS } from '../t
 import { ensureCover, listPhotos, nextPhotoOrder, uniqueSlug, slugify, deletePhoto, deleteAlbum, getHighlightPhotos, setHighlightIds, MAX_HIGHLIGHTS } from '../store.js';
 import { startAlbumSync, syncingAlbumIds, parseSharedAlbumToken } from '../icloud.js';
 import { normalizeSocial, SOCIAL_KEYS } from '../social.js';
+import { renderAbout, introParts } from '../about.js';
 import { parseTagList, addTags, removeTags, tagsForPhotos, allTags, renameTag, deleteTag, MAX_TAGS_PER_PHOTO } from '../tags.js';
 
 const router = express.Router();
@@ -23,6 +24,12 @@ router.post('/login', login);
 router.use(requireAdmin);
 router.post('/logout', (req, res) => { clearSessionCookie(res); res.json({ ok: true }); });
 router.get('/me', (req, res) => res.json({ admin: true }));
+
+// Live preview of the About text while it is being edited: the page as HTML, and what the title page will show.
+router.post('/about/preview', (req, res) => {
+  const text = String(req.body?.text ?? '').slice(0, 5000);
+  res.json({ html: renderAbout(text).toString(), intro: introParts(text, getSetting('tagline')) });
+});
 
 // ---------- albums ----------
 const albumRow = (a) => ({
