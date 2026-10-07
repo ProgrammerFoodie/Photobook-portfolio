@@ -33,10 +33,12 @@ function introText(about, fallback) {
 }
 
 /** A highlight photo as a framed figure that opens in the viewer on its album page. */
-function plate(p, cls = '', { i = 0, sizes = '(min-width:1000px) 20vw, 60vw' } = {}) {
+function plate(p, cls = '', { i = 0, sizes = '(min-width:1000px) 20vw, 60vw', priority = false } = {}) {
+  // priority: the photo on the closed cover is the first thing seen, so load and decode it right away
+  const loading = priority ? raw('loading="eager" decoding="sync" fetchpriority="high"') : raw('decoding="async"');
   return html`<figure class="plate ${cls}" style="--c:${p.color};--i:${i}"><a href="/a/${p.album_slug}/p/${p.id}">
     <img src="${thumbUrl(p)}" srcset="${thumbUrl(p)} ${derivedWidth(p, 800)}w, ${displayUrl(p)} ${derivedWidth(p, 2048)}w" sizes="${sizes}"
-      width="${derivedWidth(p, 800)}" height="${derivedHeight(p, 800)}" alt="${p.caption || p.album_title}" decoding="async"></a></figure>`;
+      width="${derivedWidth(p, 800)}" height="${derivedHeight(p, 800)}" alt="${p.caption || p.album_title}" ${loading}></a></figure>`;
 }
 
 export function homeView(req, { settings, albums, categories, activeCat, highlights = [], suggestions = [] }) {
@@ -64,7 +66,7 @@ export function homeView(req, { settings, albums, categories, activeCat, highlig
           <h1 class="cover-title">${settings.site_title}${settings.cover_subtitle ? html`<small>${settings.cover_subtitle}</small>` : ''}</h1>
           <div class="cover-art">
             <span class="block" aria-hidden="true"></span>
-            ${coverPhoto ? plate(coverPhoto, 'cover-photo', { sizes: '(min-width:1000px) 28vw, 80vw' }) : html`<div class="plate cover-photo empty-plate"></div>`}
+            ${coverPhoto ? plate(coverPhoto, 'cover-photo', { sizes: '(min-width:1000px) 28vw, 80vw', priority: true }) : html`<div class="plate cover-photo empty-plate"></div>`}
           </div>
           <p class="cover-foot">${year}</p>
           ${socialRow(links, 'on-cover')}
@@ -91,7 +93,7 @@ export function homeView(req, { settings, albums, categories, activeCat, highlig
         <h1 class="cover-title">${settings.site_title}${settings.cover_subtitle ? html`<small>${settings.cover_subtitle}</small>` : ''}</h1>
         <div class="cover-art">
           <span class="block" aria-hidden="true"></span>
-          ${coverPhoto ? plate(coverPhoto, 'cover-photo', { sizes: '(min-width:1000px) 28vw, 80vw' }) : html`<div class="plate cover-photo empty-plate"></div>`}
+          ${coverPhoto ? plate(coverPhoto, 'cover-photo', { sizes: '(min-width:1000px) 28vw, 80vw', priority: true }) : html`<div class="plate cover-photo empty-plate"></div>`}
         </div>
         <p class="cover-foot">${year}</p>
         ${socialRow(links, 'on-cover')}

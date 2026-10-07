@@ -70,7 +70,8 @@ body.book::before{content:"";position:fixed;inset:0;z-index:-1;background:linear
 .cover-title small{display:block;font-weight:400;font-size:.66em;margin-top:.22em;letter-spacing:.03em}
 .cover-art{position:absolute;left:0;right:19%;top:28%;bottom:12.5%;display:grid;grid-template-columns:22% 1fr}
 .cover-art .block{background:var(--accent);transform-origin:0 50%}
-.cover-art .plate{height:100%}
+.cover-art .plate{height:100%;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 45%,var(--paper-shade)),color-mix(in srgb,var(--desk) 40%,var(--paper-shade)))}
+.cover-art .plate img{transform:translateZ(0)} /* own layer: the photo is repainted inside the 3D-turning cover */
 .cover-foot{position:absolute;right:19%;bottom:5.2%;margin:0;font-size:clamp(8px,2cqw,15px);letter-spacing:.1em;color:var(--ink-dim)}
 
 .face.back{background:linear-gradient(to right,var(--paper) 88%,var(--paper-shade))}
