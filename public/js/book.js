@@ -143,6 +143,13 @@
     // ---- the invisible, keyboard-reachable control over the closed cover ----
     // (kept outside the 3D scene so it doesn't flicker while the cover tilts)
     const hit = button('hit', 'Open the book');
+    // a visible hint for people who don't know the cover opens (the button itself stays invisible);
+    // it goes away with the button once the book is open
+    const hint = document.createElement('span');
+    hint.className = 'open-cue';
+    hint.setAttribute('aria-hidden', 'true');
+    hint.textContent = 'Open the book';
+    hit.append(hint);
     const settle = () => {
       if (opened) return;
       tween('--p', 0, 700, EASE.inOut).then((arrived) => { if (arrived && !hovering && !opened) breathe(); });

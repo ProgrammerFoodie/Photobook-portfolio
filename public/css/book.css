@@ -159,6 +159,16 @@ body.book::before{content:"";position:fixed;inset:0;z-index:-1;background:linear
 .hit{position:absolute;z-index:6;padding:0;border:0;border-radius:4px;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .hit:focus-visible{outline:3px solid var(--accent);outline-offset:-10px}
 .stage.open .hit{display:none}
+/* the hint on the closed cover: appears after a few seconds, then breathes gently */
+.open-cue{position:absolute;left:50%;bottom:16%;transform:translateX(-50%);padding:.55em 1.2em;border-radius:999px;white-space:nowrap;pointer-events:none;
+  font:600 clamp(13px,2vmin,19px)/1 var(--font-sans);letter-spacing:.06em;text-transform:uppercase;background:var(--accent);color:var(--on-accent);
+  box-shadow:0 6px 18px -6px color-mix(in srgb,var(--ink) 60%,transparent)}
+.hit:hover .open-cue,.hit:focus-visible .open-cue{background:var(--accent2)}
+@media (prefers-reduced-motion:no-preference){
+  .open-cue{opacity:0;animation:cueShow .8s 3s ease-out forwards,cueBreathe 3.2s 3.8s ease-in-out infinite}
+}
+@keyframes cueShow{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translateX(-50%)}}
+@keyframes cueBreathe{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.06)}}
 .stage.manual .book{animation:none;transform:translateX(calc(25% * (var(--ka)*var(--p) + var(--kb)*var(--v) + var(--kc))))}
 .stage.manual .flip{animation:none;transform:translateZ(.5px) rotateY(calc(var(--p) * -180deg))}
 .stage.manual .shadow{animation:none;left:calc(50% * (1 - var(--p)))}
