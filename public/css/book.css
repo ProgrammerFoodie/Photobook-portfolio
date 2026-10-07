@@ -77,6 +77,7 @@ body.book::before{content:"";position:fixed;inset:0;z-index:-1;background:linear
 .face.back{background:linear-gradient(to right,var(--paper) 88%,var(--paper-shade))}
 .leaf{background:linear-gradient(to left,var(--paper) 94%,var(--paper-shade))}
 .collage{position:absolute;inset:9% 6% 9% 9%;display:flex;gap:5%}
+.stage.has-socials .collage{bottom:13%} /* a clear strip under the photos for the icons and the folio */
 .collage .col{flex:1;min-width:0;display:flex;flex-direction:column;gap:3.5%}
 .collage .plate{flex:1 1 0;min-height:0}
 .collage .note{flex:none}
@@ -99,6 +100,7 @@ body.book::before{content:"";position:fixed;inset:0;z-index:-1;background:linear
 @media (min-width:640px) and (min-height:340px) and (min-aspect-ratio:5/4){
   .landing.wrap{max-width:none;padding:0}
   .landing .sheet{width:min(1240px,calc(100% - 2*clamp(16px,4vw,48px)))}
+  .socials.on-page{left:auto;right:9%;transform:none} /* on the page margin, opposite the folio */
   .stage{--m:2.2vmin;--cue:50px;--h:calc(100vh - var(--m)*2 - var(--cue));--h:calc(100dvh - var(--m)*2 - var(--cue));
     position:relative;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:var(--h) var(--cue);gap:0;justify-items:center;align-items:center;
     max-width:none;margin:0;padding:var(--m) var(--m) 0;height:100vh;height:100dvh;min-height:340px;
