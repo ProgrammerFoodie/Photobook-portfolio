@@ -10,6 +10,21 @@ Visitors can browse, search by tag to find their own car, view at original size,
 - Light pages: the styles and scripts total ≈ 50 KB (≈ 15 KB gzipped); an album page adds about 1 KB of HTML per photo (≈ 65 bytes once compressed: a 226-photo album is ≈ 15 KB over the wire). Photos load lazily.
 - Runs comfortably on 1 CPU / 1 GB RAM (photo processing is one-at-a-time; peak memory stayed under 180 MB while importing a 226-photo album).
 
+## Admin panel
+
+The admin is a small single-page app at `/admin`: what visitors are doing, albums and photos, the title page, tags and the colour palette.
+These screenshots use generated demo images and made-up numbers, not real photos or statistics.
+
+![Dashboard: totals, most liked and most downloaded photos, albums by views](docs/screenshots/admin-dashboard.jpg)
+
+| Albums | Album details |
+| --- | --- |
+| ![Album list with publish switches and reordering](docs/screenshots/admin-albums.jpg) | ![Album editor: title, link name, category, date, description, visibility](docs/screenshots/admin-album-details.jpg) |
+| **Photos and tags** | **Title page highlights** |
+| ![Photo grid with tags, highlight and cover buttons](docs/screenshots/admin-album-photos.jpg) | ![Choosing the cover and highlight photos for the title page](docs/screenshots/admin-title-page.jpg) |
+
+![Colour palette editor with live preview and contrast badges](docs/screenshots/admin-palette.jpg)
+
 ## Quick start
 
 ```bash
