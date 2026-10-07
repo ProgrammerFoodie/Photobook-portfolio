@@ -177,12 +177,12 @@ test('the landing page loads the opening-sequence script only when there is a bo
   await api('PATCH', '/settings', { highlights: [ids[3]] });
 });
 
-test('the closed book carries no call-to-action text: the only link is an icon with an accessible name', async () => {
+test('the title page has one labelled link to the albums, and no click/tap instructions in the markup', async () => {
   await api('PATCH', '/settings', { highlights: [ids[2], ids[1], ids[0]] });
   const html = await home();
   const stage = html.slice(html.indexOf('<section class="stage'), html.indexOf('id="contents"'));
-  assert.match(stage, /<a class="cue" href="#contents" aria-label="Contents"><svg/);
-  assert.ok(!/click|tap|open the book|contents\s*<svg|press/i.test(stage.replace(/aria-label="Contents"/, '')), 'no visible prompt text on the title page');
+  assert.match(stage, /<a class="cue" href="#contents"><span>Albums<\/span><svg/);
+  assert.ok(!/click|tap|open the book|press/i.test(stage), 'the open-the-book hint is added by book.js, not by the markup');
   await api('PATCH', '/settings', { highlights: [ids[3]] });
 });
 

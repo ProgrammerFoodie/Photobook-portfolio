@@ -99,7 +99,7 @@ export function homeView(req, { settings, albums, categories, activeCat, highlig
         ${socialRow(links, 'on-cover')}
       </article>`}
     </div></div>
-    <a class="cue" href="#contents" aria-label="Contents">${icon('arrowDown')}</a>
+    <a class="cue" href="#contents"><span>Albums</span>${icon('arrowDown')}</a>
   </section>
 
   <section class="sheet" id="contents" aria-labelledby="contents-h">
